@@ -3,14 +3,25 @@ import pygame
 import math
 
 
-class BaseTank(ABC):
-    def __init__(self, x, y, color, health):
-        self.x = x
-        self.y = y
+from core.base_object import BaseObject
+
+
+class BaseTank(BaseObject):
+    def __init__(self, objectController, x, y, color, health):
+        super().__init__(objectController, x, y, 100, 50)
         self.color = color
         self.health = health
         self.angle = 0
-        self.size_x, self.size_y = 20, 20
+    
+    def start(self):
+        pass
+
+    def update(self):
+        pass
+
+    def end(self):
+        pass
+
 
     @abstractmethod
     def shoot(self):
@@ -30,7 +41,9 @@ class BaseTank(ABC):
         print(f"{self.__class__.__name__} has been destroyed!")
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.size_x, self.size_y))
+
+        pygame.draw.rect(screen, self.color, self)
+
 
     # def draw_health_bar(self, screen):
     #     health_bar_width = 20

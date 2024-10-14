@@ -4,8 +4,10 @@ COLOR_STANDARD_TANK = (50, 50, 200)  # Blueish
 
 
 class StandardTank(BaseTank):
-    def __init__(self, x, y):
-        super().__init__(x, y, COLOR_STANDARD_TANK, 100)
+
+    def __init__(self, objectController, x, y):
+        super().__init__(objectController, x, y, COLOR_STANDARD_TANK, 100)
+
         self.speed = 3
         self.damage = 35
 
