@@ -75,3 +75,10 @@ class BaseTank(BaseObject):
             (0, 255, 0),
             (frame_bar_x, frame_bar_y, health_bar_width, health_bar_height),
         )
+
+    # Combat logic
+
+    def take_damage(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.die()
