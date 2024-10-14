@@ -50,11 +50,28 @@ class BaseTank(BaseObject):
     def draw(self, screen):
         self.cannon.draw(screen)
         pygame.draw.rect(screen, self.color, self)
+        self.draw_health_bar(screen)
 
-    # def draw_health_bar(self, screen):
-    #     health_bar_width = 20
-    #     health_bar_height = 5
-    #     health_bar_x = self.x - health_bar_width / 2
-    #     health_bar_y = self.y - 25
+    def draw_health_bar(self, screen):
+        health_bar_width = 20
+        health_bar_height = 5
 
-    #     pygame.draw.rect(screen, (0, 255, 0), (health_bar_x, health_bar_y, health_bar_width, health_bar_height))
+        # Fixed frame
+        frame_bar_x = self.x + self.size_x / 2 - health_bar_width / 2
+        frame_bar_y = self.y - 2 * health_bar_height
+
+        # Draw frame
+        pygame.draw.rect(
+            screen,
+            (200, 200, 200),
+            (frame_bar_x, frame_bar_y, health_bar_width, health_bar_height),
+        )
+
+        # Health bar
+        health_bar_width = self.health / self.max_health * health_bar_width
+
+        pygame.draw.rect(
+            screen,
+            (0, 255, 0),
+            (frame_bar_x, frame_bar_y, health_bar_width, health_bar_height),
+        )
