@@ -1,6 +1,6 @@
 services:
   game:
-    container_name: game
+    container_name: backend
     build: .
     ports:
       - "8000:8000" 
