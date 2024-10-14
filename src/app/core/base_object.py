@@ -1,31 +1,22 @@
 from abc import abstractmethod
 
+import pygame
 
-class BaseObject():
-	
-	components = []
+class BaseObject(pygame.Rect):
 
-	def __init__(self, object_controller):
-		object_controller.list.append(self)
+    def __init__(self, object_controller, x, y, width, height):
+        super().__init__(x, y, width, height)
+        object_controller.list.append(self)
 
-	def add_component(self, component):
-		self.components.append(component)
+    @abstractmethod
+    def start(self):
+        pass
 
-	def get_component(self, component):
-		for c in self.components:
-			if isinstance(c, component):
-				return c
-		return None
+    @abstractmethod
+    def update(self):
+        pass
+        
 
-	@abstractmethod
-	def start(self):
-		for component in self.components:
-			component.start()
-
-	def update(self):
-		for component in self.components:
-			component.update()
-
-	def end(self):
-		for component in self.components:
-			component.end()
+    @abstractmethod
+    def end(self):
+        pass
