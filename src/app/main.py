@@ -5,37 +5,35 @@ from core import ObjectController
 
 CLOCK = None
 SCREEN_SIZE = (1280, 720)
-SCREEN = None
 RUNNING = True
 
 OBJECT_CONTROLLER = ObjectController()
+
+PLAYER1 = LightTank(OBJECT_CONTROLLER, 100, 500)
+PLAYER2 = LightTank(OBJECT_CONTROLLER, 1000, 500)
 
 FLOOR = pygame.Rect(0, 600, 1280, 120)
 
 
 def start():
-    global SCREEN, CLOCK
+    global OBJECT_CONTROLLER, CLOCK
     pygame.init()
-    SCREEN = pygame.display.set_mode(SCREEN_SIZE)
+    OBJECT_CONTROLLER.screen = pygame.display.set_mode(SCREEN_SIZE)
     CLOCK = pygame.time.Clock()
-    OBJECT_CONTROLLER.start()
     OBJECT_CONTROLLER.start()
 
 
 def update():
-    global RUNNING, CLOCK, SCREEN
+    global RUNNING, CLOCK, OBJECT_CONTROLLER
     while RUNNING:
-        SCREEN.fill("skyblue")
-        pygame.draw.rect(SCREEN, "green", FLOOR)
+        OBJECT_CONTROLLER.screen.fill("skyblue")
+        pygame.draw.rect(OBJECT_CONTROLLER.screen, "brown", FLOOR)
         
         OBJECT_CONTROLLER.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUNNING = False
-        
-        # Test draw tanks
-        tank = LightTank(100, 100)
-        tank.draw(SCREEN)
 
         pygame.display.update()
         CLOCK.tick(60)
