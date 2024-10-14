@@ -12,10 +12,6 @@ OBJECT_CONTROLLER = ObjectController()
 
 FLOOR = pygame.Rect(0, 600, 1280, 120)
 
-OBJECT_CONTROLLER = ObjectController()
-
-FLOOR = pygame.Rect(0, 600, 1280, 120)
-
 
 def start():
     global SCREEN, CLOCK
