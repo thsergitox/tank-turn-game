@@ -1,10 +1,14 @@
 import pygame
 from models.tank import *
+from core import ObjectController
 
 CLOCK = None
 SCREEN_SIZE = (1280, 720)
 SCREEN = None
 RUNNING = True
+
+OBJECT_CONTROLLER = ObjectController()
+
 
 
 def start():
@@ -12,24 +16,30 @@ def start():
     pygame.init()
     SCREEN = pygame.display.set_mode(SCREEN_SIZE)
     CLOCK = pygame.time.Clock()
+    OBJECT_CONTROLLER.start()
 
 
 def update():
     global RUNNING, CLOCK, SCREEN
     while RUNNING:
+        SCREEN.fill("skyblue")
+
+        OBJECT_CONTROLLER.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUNNING = False
-        SCREEN.fill("skyblue")
+        
         # Test draw tanks
         tank = LightTank(100, 100)
         tank.draw(SCREEN)
 
-        pygame.display.flip()
+        pygame.display.update()
         CLOCK.tick(60)
 
 
 def end():
+    OBJECT_CONTROLLER.end()
     pygame.quit()
 
 
