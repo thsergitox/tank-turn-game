@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 import pygame
-import math
 
 
 class BaseTank(ABC):
@@ -15,10 +14,16 @@ class BaseTank(ABC):
 
     @abstractmethod
     def shoot(self):
+        # TODO: Implement shooting logic
+        pass
+
+    def _draw_aim_line(self, angle):
+        # TODO: Implement aim line drawing
         pass
 
     def aim(self, angle):
         self.angle = angle
+        self._draw_aim_line(self.angle)
 
     def move(self, direction):
         if direction == 1:
@@ -57,3 +62,10 @@ class BaseTank(ABC):
             (0, 255, 0),
             (frame_bar_x, frame_bar_y, health_bar_width, health_bar_height),
         )
+
+    # Combat logic
+
+    def take_damage(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.die()
