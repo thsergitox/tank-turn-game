@@ -32,10 +32,6 @@ def update():
             if event.type == pygame.QUIT:
                 RUNNING = False
         
-        # Test draw tanks
-        tank = LightTank(100, 100)
-        tank.draw(SCREEN)
-
         pygame.display.update()
         CLOCK.tick(60)
 
