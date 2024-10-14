@@ -28,7 +28,6 @@ def start():
     CLOCK = pygame.time.Clock()
     OBJECT_CONTROLLER.start()
 
-
 def update():
     global RUNNING, CLOCK, OBJECT_CONTROLLER
     while RUNNING:
@@ -51,6 +50,7 @@ def update():
 
 
 def end():
+    OBJECT_CONTROLLER.end()
     OBJECT_CONTROLLER.end()
     pygame.quit()
 
