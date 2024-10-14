@@ -1,9 +1,9 @@
-
 from typing import Optional
 from .tank import Tank
+from pydantic import BaseModel
 
-class Player():
 
+class Player(BaseModel):
     name: str
     level: int = 1
     password: Optional[str] = None
@@ -16,7 +16,5 @@ class Player():
                 "name": "Hero",
                 "password": "123456",
                 "level": 1,
-                
-                
             }
         }

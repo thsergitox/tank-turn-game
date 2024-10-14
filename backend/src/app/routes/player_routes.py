@@ -65,11 +65,6 @@ async def register(
         )
 
 
-@router.get("/logout")
-async def logout(response: Response):
-    return {"message": "Logout successful go to home", "home": "/"}
-
-
 @router.get("/all")
 async def get_all_players(
     response: Response,

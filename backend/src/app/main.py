@@ -14,6 +14,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
+
 def generate_markdown_banner():
     markdown = Markdown(
         """
@@ -45,6 +46,7 @@ instrumentator.add(
         metric_name="http_all_request_duration_seconds",
     )
 )
+
 
 @app.on_event("startup")
 async def startup_event():

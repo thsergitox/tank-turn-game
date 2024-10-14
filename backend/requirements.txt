@@ -43,7 +43,7 @@ uvicorn==0.28.0
 
 prometheus_fastapi_instrumentator
 
-jwt
+PyJWT
 bcrypt
 
 rich
