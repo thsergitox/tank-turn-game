@@ -5,11 +5,13 @@ SCREEN_SIZE = (1280, 720)
 SCREEN = None
 RUNNING = True
 
+
 def start():
     global SCREEN, CLOCK
     pygame.init()
     SCREEN = pygame.display.set_mode(SCREEN_SIZE)
     CLOCK = pygame.time.Clock()
+
 
 def update():
     global RUNNING, CLOCK, SCREEN
@@ -21,8 +23,10 @@ def update():
         pygame.display.flip()
         CLOCK.tick(60)
 
+
 def end():
     pygame.quit()
+
 
 if __name__ == "__main__":
     start()
