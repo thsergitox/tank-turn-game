@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import math
 import pygame
 
 
@@ -11,19 +12,23 @@ class BaseTank(ABC):
         self.health = max_health
         self.angle = 0
         self.size_x, self.size_y = 20, 20
+        self.pivot_aim_line_x = self.x + self.size_x * 0.75
+        self.pivot_aim_line_y = self.y + self.size_y * 0.5
+        self.aim_line_length = self.size_x * 0.65
+        self.width_aim_line = int(self.size_x * 0.35)
 
     @abstractmethod
     def shoot(self):
         # TODO: Implement shooting logic
         pass
 
-    def _draw_aim_line(self, angle):
-        # TODO: Implement aim line drawing
-        pass
-
     def aim(self, angle):
+        # Restriction angle to 0-90 degrees
+        if angle > 90:
+            angle = 90
+        elif angle < 0:
+            angle = 0
         self.angle = angle
-        self._draw_aim_line(self.angle)
 
     def move(self, direction):
         if direction == 1:
@@ -63,8 +68,19 @@ class BaseTank(ABC):
             (frame_bar_x, frame_bar_y, health_bar_width, health_bar_height),
         )
 
-    # Combat logic
+        # Aim line
+        pygame.draw.line(
+            screen,
+            self.color,
+            (self.pivot_aim_line_x, self.pivot_aim_line_y),  # Start position (pivot)
+            (
+                self.pivot_aim_line_x + self.aim_line_length * math.cos(self.angle),
+                self.pivot_aim_line_y - self.aim_line_length * math.sin(self.angle),
+            ),
+            self.width_aim_line,
+        )
 
+    # Combat logic
     def take_damage(self, damage):
         self.health -= damage
         if self.health <= 0:
