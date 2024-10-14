@@ -25,6 +25,7 @@ pydantic==2.6.3
     #   -r requirements.in
     #   fastapi
 pydantic-core==2.16.3
+pydantic_settings
     # via pydantic
 pymongo==4.5.0
     # via motor
@@ -41,3 +42,8 @@ uvicorn==0.28.0
     # via -r requirements.in
 
 prometheus_fastapi_instrumentator
+
+jwt
+bcrypt
+
+rich

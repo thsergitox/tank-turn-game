@@ -1,9 +1,6 @@
-from fastapi import APIRouter, Depends, Response, JSONResponse
-from typing import List
-from app.models.player import Player
+from fastapi import APIRouter, Depends, Response
+from fastapi.responses import JSONResponse
 from app.services.player_service import PlayerService
-from app.database.mongo.queries import PlayerQueries
-from app.database.mongo.connection import get_database
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/player")
@@ -32,9 +29,8 @@ async def login(
     try:
         player = await player_service.login(username, password)
         print(player)
-        response = {"message": player["message"]}
+        response = {"message": player["message"], "token": player["token"]}
         response = JSONResponse(content=response)
-        response.set_cookie(key="access_token", value=player["token"], httponly=True)
         return response
     except Exception as e:
         return JSONResponse(
@@ -60,9 +56,8 @@ async def register(
     try:
         player = await player_service.register(username, password)
         print(player)
-        response = {"message": "Registration successful"}
+        response = {"message": "Registration successful", "token": player["token"]}
         response = JSONResponse(content=response)
-        response.set_cookie(key="access_token", value=player["token"], httponly=True)
         return response
     except Exception as e:
         return JSONResponse(
@@ -72,8 +67,18 @@ async def register(
 
 @router.get("/logout")
 async def logout(response: Response):
-    
-
-
-
     return {"message": "Logout successful go to home", "home": "/"}
+
+
+@router.get("/all")
+async def get_all_players(
+    response: Response,
+    player_service: PlayerService = Depends(PlayerService.get_player_service),
+):
+    try:
+        players = await player_service.get_all_players()
+        return players
+    except Exception as e:
+        return JSONResponse(
+            status_code=400, content={"message": f"Failed to get players: {str(e)}"}
+        )

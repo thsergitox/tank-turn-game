@@ -1,9 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from app.database.mongo.connection import MongoConnection
 from app.config import settings
 from app.routes import router
 from prometheus_fastapi_instrumentator import Instrumentator, metrics
-from fastapi import Request
 import jwt
 from rich.console import Console
 from rich.markdown import Markdown
@@ -14,7 +13,6 @@ app = FastAPI(
     description="This is the API for the Tank Turn Gamee project",
     version="1.0.0",
 )
-
 
 def generate_markdown_banner():
     markdown = Markdown(
@@ -33,18 +31,6 @@ Console Quest RPG is a turn-based role-playing game developed as a software proj
     return markdown
 
 
-@app.middleware("http")
-async def token_middleware(request: Request, call_next):
-    token = request.cookies.get("access_token")
-    if token:
-        try:
-            payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=["HS256"])
-            request.state.user = payload.get("name")
-        except jwt.ExpiredSignatureError:
-            request.state.user = None
-    return await call_next(request)
-
-
 app.include_router(router, prefix="/api")
 
 instrumentator = Instrumentator().instrument(app)
@@ -59,7 +45,6 @@ instrumentator.add(
         metric_name="http_all_request_duration_seconds",
     )
 )
-
 
 @app.on_event("startup")
 async def startup_event():

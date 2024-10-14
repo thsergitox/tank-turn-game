@@ -1,5 +1,5 @@
 from app.models.player import Player
-from app.database.mongo.queries.player import PlayerQueries
+from app.database.mongo.queries.player_queries import PlayerQueries
 import jwt
 import bcrypt
 import datetime
@@ -45,23 +45,7 @@ class PlayerService:
         """
         if await self.player_queries.it_exists(name):
             raise Exception("Player already exists")
-        standard_abilities = [
-            {
-                "id": 0,
-                "name": "Fireball",
-                "description": "A ball of fire",
-                "damage": 30,
-                "mana_cost": 25,
-            },
-            {
-                "id": 1,
-                "name": "Iceshard",
-                "description": "A shard of ice",
-                "damage": 15,
-                "mana_cost": 12,
-            },
-        ]
-        player = Player(name=name, password=password, abilities=standard_abilities)
+        player = Player(name=name, password=password)
         try:
             result = await self.player_queries.register(player)
             if "player" in result:
@@ -151,54 +135,3 @@ class PlayerService:
             bool: True si la eliminación fue exitosa, False en caso contrario.
         """
         return await self.player_queries.delete_player(player_id)
-
-    def add_experience(self, player: dict, amount: int) -> bool:
-        """
-        Suma experiencia a un jugador.
-
-        Args:
-            amount (int): La cantidad de experiencia a sumar.
-            player (dict): El jugador al que se le sumará la experiencia.
-
-        Returns:
-            dict: El jugador con la nueva experiencia.
-        """
-        player["xp"] += amount
-        if player["xp"] >= player["target_xp"]:
-            self._level_up(player)
-            return True
-        return False
-
-    def _level_up(self, player: dict) -> dict:
-        """
-        Sube de nivel a un jugador.
-
-        Args:
-            player (dict): El jugador a subir de nivel.
-
-        Returns:
-            dict: El jugador con el nuevo nivel.
-        """
-        player["level"] += 1
-        player["target_xp"] = player["level"] * 100
-        player["xp"] = 0
-        player["max_hp"] += 10
-        player["current_hp"] = player["max_hp"]
-        player["max_mana"] += 5
-        player["current_mana"] = player["max_mana"]
-        player["attack"] += 2
-        player["defense"] += 1
-
-        return player
-
-    def die(self, player: dict) -> dict:
-        """
-        Mata a un jugador.
-
-        Args:
-            player (dict): El jugador a matar.
-        """
-        player["current_hp"] = player["max_hp"]
-        player["current_mana"] = player["max_mana"]
-        player["current_enemy"] = None
-        return player
