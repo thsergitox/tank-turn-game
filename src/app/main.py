@@ -1,4 +1,5 @@
 import pygame
+from core import ObjectController
 from models.tank import *
 from core import ObjectController
 
@@ -11,12 +12,17 @@ OBJECT_CONTROLLER = ObjectController()
 
 FLOOR = pygame.Rect(0, 600, 1280, 120)
 
+OBJECT_CONTROLLER = ObjectController()
+
+FLOOR = pygame.Rect(0, 600, 1280, 120)
+
 
 def start():
     global SCREEN, CLOCK
     pygame.init()
     SCREEN = pygame.display.set_mode(SCREEN_SIZE)
     CLOCK = pygame.time.Clock()
+    OBJECT_CONTROLLER.start()
     OBJECT_CONTROLLER.start()
 
 
@@ -27,7 +33,6 @@ def update():
         pygame.draw.rect(SCREEN, "green", FLOOR)
         
         OBJECT_CONTROLLER.update()
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUNNING = False
