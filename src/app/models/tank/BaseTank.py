@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from pygame import Vector2
+import math
 import pygame
 import math
 
@@ -17,6 +18,10 @@ class BaseTank(BaseObject):
         self.movement = movement
         self.actual_movement = movement
         self.angle = 0
+        self.pivot_aim_line_x = self.x + self.size_x * 0.75
+        self.pivot_aim_line_y = self.y + self.size_y * 0.5
+        self.aim_line_length = self.size_x * 0.65
+        self.width_aim_line = int(self.size_x * 0.35)
         self.cannon = Cannon(Vector2(self.center))
 
     def start(self):
@@ -76,8 +81,19 @@ class BaseTank(BaseObject):
             (frame_bar_x, frame_bar_y, health_bar_width, health_bar_height),
         )
 
-    # Combat logic
+        # Aim line
+        pygame.draw.line(
+            screen,
+            self.color,
+            (self.pivot_aim_line_x, self.pivot_aim_line_y),  # Start position (pivot)
+            (
+                self.pivot_aim_line_x + self.aim_line_length * math.cos(self.angle),
+                self.pivot_aim_line_y - self.aim_line_length * math.sin(self.angle),
+            ),
+            self.width_aim_line,
+        )
 
+    # Combat logic
     def take_damage(self, damage):
         self.health -= damage
         if self.health <= 0:
