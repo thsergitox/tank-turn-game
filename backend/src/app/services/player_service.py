@@ -102,7 +102,7 @@ class PlayerService:
     async def get_player_by_name(self, player_name: str) -> dict:
         return await self.player_queries.get_player_by_name(player_name)
 
-    async def update_player(self, player: Player) -> bool:
+    async def update_player(self, token: str) -> bool:
         """
         Actualiza un jugador existente.
 
@@ -113,6 +113,12 @@ class PlayerService:
         Returns:
             bool: True si la actualización fue exitosa, False en caso contrario.
         """
+
+        name = jwt.decode(token, JWT_SECRET_KEY, algorithms=["HS256"]).get("name")
+        if not await self.player_queries.it_exists(name):
+            raise Exception("Player not found")
+        player = await self.player_queries.get_player_by_name(token)
+        # TODO: Implementar lógica para actualizar el jugador.
         return await self.player_queries.update_player(player)
 
     async def delete_player(self, player_name: str) -> bool:

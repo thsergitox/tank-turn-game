@@ -11,6 +11,11 @@ class InputData(BaseModel):
     password: str
 
 
+class UpdateData(BaseModel):
+    token: str
+    # TODO: Add fields to update player data
+
+
 def is_valid_input_data(data: InputData):
     if data.username and data.password:
         return JSONResponse(
@@ -95,4 +100,25 @@ async def delete_player(
     except Exception as e:
         return JSONResponse(
             status_code=400, content={"message": f"Failed to delete player: {str(e)}"}
+        )
+
+
+@router.post("/update")
+async def update_player(
+    request: UpdateData,
+    response: Response,
+    player_service: PlayerService = Depends(get_player_service),
+):
+    try:
+        result = await player_service.update_player(request.token)
+        if result:
+            return JSONResponse(content={"message": "Player updated successfully"})
+        else:
+            return JSONResponse(
+                status_code=400,
+                content={"message": "Player could not be updated", "result": result},
+            )
+    except Exception as e:
+        return JSONResponse(
+            status_code=400, content={"message": f"Failed to update player: {str(e)}"}
         )
