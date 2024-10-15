@@ -1,9 +1,10 @@
 import pygame
 import requests
 from views.ui_elements import draw_text
+from config import settings
 
 SCREEN_SIZE = (1280, 720)
-LOGIN_URL = "http://localhost:8000/api/player/login"
+LOGIN_URL = settings.API_URL + "/player/login"
 
 
 def menu():
