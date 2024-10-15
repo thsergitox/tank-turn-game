@@ -21,12 +21,14 @@ GAME_MANAGER.AddPlayer(PLAYER2)
 
 FLOOR = pygame.Rect(0, 600, 1280, 120)
 
+
 def start():
     global OBJECT_CONTROLLER, CLOCK
     pygame.init()
     OBJECT_CONTROLLER.screen = pygame.display.set_mode(SCREEN_SIZE)
     CLOCK = pygame.time.Clock()
     OBJECT_CONTROLLER.start()
+
 
 def update():
     global RUNNING, CLOCK, OBJECT_CONTROLLER
