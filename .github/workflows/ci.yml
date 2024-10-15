@@ -20,6 +20,10 @@ jobs:
     - name: Build and run containers
       run: |
         docker compose -f compose.yml up -d --build
+    
+    - name: Run tests
+      run: |
+        docker exec backend python -m pytest tests/
 
   black-formatter:
     name: Black Code Formatter
