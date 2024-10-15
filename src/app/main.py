@@ -1,8 +1,9 @@
+import pygame
 from views.menu_view import menu
 from views.stats_view import show_stats
+from core import ObjectController
 from models.tank import *
 from core import ObjectController, GameManager
-import pygame
 
 CLOCK = None
 SCREEN_SIZE = (1280, 720)
