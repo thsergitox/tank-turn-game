@@ -1,0 +1,58 @@
+annotated-types
+    # via pydantic
+anyio
+    # via starlette
+click
+    # via uvicorn
+dnspython
+    # via
+    #   email-validator
+    #   pymongo
+email-validator
+    # via pydantic
+fastapi
+    # via -r requirements.in
+h11
+    # via uvicorn
+idna
+    # via
+    #   anyio
+    #   email-validator
+motor
+    # via -r requirements.in
+pydantic
+    # via
+    #   -r requirements.in
+    #   fastapi
+pydantic-core
+pydantic_settings
+    # via pydantic
+pymongo
+    # via motor
+sniffio
+    # via anyio
+starlette
+    # via fastapi
+typing-extensions
+    # via
+    #   fastapi
+    #   pydantic
+    #   pydantic-core
+uvicorn
+    # via -r requirements.in
+
+prometheus_fastapi_instrumentator
+
+PyJWT
+bcrypt
+
+rich
+
+behave
+
+httpx
+
+pytest
+trio
+asgi_lifespan
+pytest_asyncio
