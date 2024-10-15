@@ -25,7 +25,7 @@ class MongoConnection:
         return cls._instance
 
     @classmethod
-    def connect_to_mongo(cls, mongo_url: str, db_name: str):
+    async def connect_to_mongo(cls, mongo_url: str, db_name: str):
         """
         Establece la conexión con MongoDB.
 
@@ -44,7 +44,7 @@ class MongoConnection:
             try:
                 cls.client = AsyncIOMotorClient(mongo_url)
                 # Verificar la conexión
-                cls.client.admin.command("ismaster")
+                await cls.client.admin.command("ismaster")
                 cls.db = cls.client[db_name]
             except ConnectionFailure:
                 cls.client = None
@@ -52,7 +52,7 @@ class MongoConnection:
                 raise ConnectionFailure("Failed to connect to MongoDB")
 
     @classmethod
-    def get_db(cls) -> Database:
+    async def get_db(cls) -> Database:
         """
         Obtiene la instancia de la base de datos.
 
@@ -69,7 +69,7 @@ class MongoConnection:
         return cls.db
 
     @classmethod
-    def close_mongo_connection(cls):
+    async def close_mongo_connection(cls):
         """
         Cierra la conexión con MongoDB.
         """
@@ -79,7 +79,7 @@ class MongoConnection:
         cls.db = None
 
     @classmethod
-    def is_connected(cls) -> bool:
+    async def is_connected(cls) -> bool:
         """
         Verifica si la conexión está establecida y activa.
 
@@ -95,7 +95,7 @@ class MongoConnection:
             return False
 
 
-def get_database() -> Database:
+async def get_database() -> Database:
     """
     Función auxiliar para obtener la instancia de la base de datos.
 
@@ -105,6 +105,6 @@ def get_database() -> Database:
     Raises:
         RuntimeError: Si la conexión no ha sido establecida.
     """
-    if not MongoConnection.is_connected():
+    if not await MongoConnection.is_connected():
         raise RuntimeError("Database connection is not active. Reconnect to MongoDB.")
-    return MongoConnection.get_db()
+    return await MongoConnection.get_db()

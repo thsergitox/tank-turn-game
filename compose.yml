@@ -5,7 +5,9 @@ services:
     ports:
       - "8000:8000" 
     depends_on:
-      - mongodb 
+      mongodb:
+        condition: service_healthy
+        restart: true
     environment:
       MONGO_URL: mongodb://root:password@mongodb:27017/db_test?authSource=admin
       MONGO_DB_NAME: db_test
@@ -21,6 +23,14 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: db_test
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://root:password@mongodb:27017/db_test?authSource=admin --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+
 
 volumes:
   mongo-data:

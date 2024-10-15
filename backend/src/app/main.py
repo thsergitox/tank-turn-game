@@ -6,12 +6,30 @@ from prometheus_fastapi_instrumentator import Instrumentator, metrics
 import jwt
 from rich.console import Console
 from rich.markdown import Markdown
+from contextlib import asynccontextmanager
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Print the banner
+    console = Console()
+    console.print(generate_markdown_banner())
+
+    # Connect to the MongoDB database
+    await MongoConnection.connect_to_mongo(settings.MONGO_URL, settings.MONGO_DB_NAME)
+
+    # Initialize the instrumentator
+    instrumentator.expose(app)
+    yield
+    await MongoConnection.close_mongo_connection()
+
 
 # Creamos una instancia de la aplicación FastAPI
 app = FastAPI(
     title="Tank Turn Game API",
     description="This is the API for the Tank Turn Gamee project",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 
@@ -24,7 +42,7 @@ def generate_markdown_banner():
 - **Powered by**: FastAPI
 - **Status**: Initializing...
 ---
-Console Quest RPG is a turn-based role-playing game developed as a software project for the CC3S2 course at the National University of Engineering. The game uses FastAPI for the backend and is designed to be played through API calls.
+Tank Turn Game API is a RESTful API that provides the backend for the Tank Turn Game project. This API is responsible for handling player registration, player login, and game data storage. The API is built using FastAPI, a modern Python web framework that is designed for building APIs quickly and efficiently.
 ---
 
 """
@@ -46,21 +64,3 @@ instrumentator.add(
         metric_name="http_all_request_duration_seconds",
     )
 )
-
-
-@app.on_event("startup")
-async def startup_event():
-    # Print the banner
-    console = Console()
-    console.print(generate_markdown_banner())
-
-    # Connect to the MongoDB database
-    MongoConnection.connect_to_mongo(settings.MONGO_URL, settings.MONGO_DB_NAME)
-
-    # Initialize the instrumentator
-    instrumentator.expose(app)
-
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    MongoConnection.close_mongo_connection()

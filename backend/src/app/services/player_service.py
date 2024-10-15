@@ -24,15 +24,6 @@ class PlayerService:
         """
         self.player_queries = player_queries
 
-    def get_player_service():
-        """
-        Retorna:
-            PlayerService: Una instancia del servicio de jugadores con sus dependencias inyectadas.
-        """
-        db = get_database()
-        player_queries = PlayerQueries(db)
-        return PlayerService(player_queries)
-
     async def register(self, name: str, password: str) -> dict:
         """
         Crea un nuevo jugador.
@@ -124,14 +115,24 @@ class PlayerService:
         """
         return await self.player_queries.update_player(player)
 
-    async def delete_player(self, player_id: str) -> bool:
+    async def delete_player(self, player_name: str) -> bool:
         """
         Elimina un jugador.
 
         Args:
-            player_id (str): El ID del jugador a eliminar.
+            player_name (str): El name del jugador a eliminar.
 
         Returns:
             bool: True si la eliminación fue exitosa, False en caso contrario.
         """
-        return await self.player_queries.delete_player(player_id)
+        return await self.player_queries.delete_player(player_name)
+
+
+async def get_player_service():
+    """
+    Retorna:
+        PlayerService: Una instancia del servicio de jugadores con sus dependencias inyectadas.
+    """
+    db = await get_database()
+    player_queries = PlayerQueries(db)
+    return PlayerService(player_queries)

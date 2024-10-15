@@ -1,44 +1,44 @@
-annotated-types==0.6.0
+annotated-types
     # via pydantic
-anyio==3.7.1
+anyio
     # via starlette
-click==8.1.7
+click
     # via uvicorn
-dnspython==2.4.2
+dnspython
     # via
     #   email-validator
     #   pymongo
-email-validator==2.1.0.post1
+email-validator
     # via pydantic
-fastapi==0.110.0
+fastapi
     # via -r requirements.in
-h11==0.14.0
+h11
     # via uvicorn
-idna==3.4
+idna
     # via
     #   anyio
     #   email-validator
-motor==3.3.1
+motor
     # via -r requirements.in
-pydantic==2.6.3
+pydantic
     # via
     #   -r requirements.in
     #   fastapi
-pydantic-core==2.16.3
+pydantic-core
 pydantic_settings
     # via pydantic
-pymongo==4.5.0
+pymongo
     # via motor
-sniffio==1.3.0
+sniffio
     # via anyio
-starlette==0.36.3
+starlette
     # via fastapi
-typing-extensions==4.8.0
+typing-extensions
     # via
     #   fastapi
     #   pydantic
     #   pydantic-core
-uvicorn==0.28.0
+uvicorn
     # via -r requirements.in
 
 prometheus_fastapi_instrumentator
@@ -47,3 +47,12 @@ PyJWT
 bcrypt
 
 rich
+
+behave
+
+httpx
+
+pytest
+trio
+asgi_lifespan
+pytest_asyncio

@@ -12,7 +12,7 @@ class BaseTank(BaseObject):
         self.color = color
         self.health = health
         self.angle = 0
-    
+
     def start(self):
         pass
 
@@ -21,7 +21,6 @@ class BaseTank(BaseObject):
 
     def end(self):
         pass
-
 
     @abstractmethod
     def shoot(self):
@@ -41,9 +40,7 @@ class BaseTank(BaseObject):
         print(f"{self.__class__.__name__} has been destroyed!")
 
     def draw(self, screen):
-
         pygame.draw.rect(screen, self.color, self)
-
 
     # def draw_health_bar(self, screen):
     #     health_bar_width = 20

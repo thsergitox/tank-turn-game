@@ -28,7 +28,7 @@ def update():
     while RUNNING:
         OBJECT_CONTROLLER.screen.fill("skyblue")
         pygame.draw.rect(OBJECT_CONTROLLER.screen, "brown", FLOOR)
-        
+
         OBJECT_CONTROLLER.update()
 
         for event in pygame.event.get():
@@ -48,4 +48,3 @@ if __name__ == "__main__":
     start()
     update()
     end()
-

@@ -127,7 +127,7 @@ class PlayerQueries:
         )
         return result.modified_count > 0
 
-    async def delete_player(self, player_id: str) -> bool:
+    async def delete_player(self, player_name: str) -> bool:
         """
         Elimina un jugador por su ID.
 
@@ -137,7 +137,7 @@ class PlayerQueries:
         Returns:
                 bool: True si se eliminó correctamente, False en caso contrario.
         """
-        result = await self.collection.delete_one({"_id": ObjectId(player_id)})
+        result = await self.collection.delete_one({"name": player_name})
         return result.deleted_count > 0
 
     async def delete_all_players(self) -> dict:

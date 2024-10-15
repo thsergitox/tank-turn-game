@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
-from app.services.player_service import PlayerService
+from app.services.player_service import PlayerService, get_player_service
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/player")
@@ -11,20 +11,23 @@ class InputData(BaseModel):
     password: str
 
 
-@router.post("/login")
-async def login(
-    login: InputData,
-    response: Response,
-    player_service: PlayerService = Depends(PlayerService.get_player_service),
-):
-    login = login.dict()
-    username = login["username"]
-    password = login["password"]
-
-    if not username or not password:
+def is_valid_input_data(data: InputData):
+    if data.username and data.password:
         return JSONResponse(
             status_code=400, content={"message": "Username and password are required"}
         )
+
+
+@router.post("/login")
+async def login(
+    request: InputData,
+    response: Response,
+    player_service: PlayerService = Depends(get_player_service),
+):
+    is_valid_input_data(request)
+    request = request.dict()
+    username = request["username"]
+    password = request["password"]
 
     try:
         player = await player_service.login(username, password)
@@ -40,18 +43,14 @@ async def login(
 
 @router.post("/register")
 async def register(
-    login: InputData,
+    request: InputData,
     response: Response,
-    player_service: PlayerService = Depends(PlayerService.get_player_service),
+    player_service: PlayerService = Depends(get_player_service),
 ):
-    login = login.dict()
-    username = login["username"]
-    password = login["password"]
-
-    if not username or not password:
-        return JSONResponse(
-            status_code=400, content={"message": "Username and password are required"}
-        )
+    is_valid_input_data(request)
+    request = request.dict()
+    username = request["username"]
+    password = request["password"]
 
     try:
         player = await player_service.register(username, password)
@@ -68,7 +67,7 @@ async def register(
 @router.get("/all")
 async def get_all_players(
     response: Response,
-    player_service: PlayerService = Depends(PlayerService.get_player_service),
+    player_service: PlayerService = Depends(get_player_service),
 ):
     try:
         players = await player_service.get_all_players()
@@ -76,4 +75,24 @@ async def get_all_players(
     except Exception as e:
         return JSONResponse(
             status_code=400, content={"message": f"Failed to get players: {str(e)}"}
+        )
+
+
+@router.delete("/delete/{username}")
+async def delete_player(
+    username: str,
+    response: Response,
+    player_service: PlayerService = Depends(get_player_service),
+):
+    try:
+        result = await player_service.delete_player(username)
+        if result:
+            return JSONResponse(content={"message": "Player deleted successfully"})
+        else:
+            return JSONResponse(
+                status_code=400, content={"message": "Player could not be deleted"}
+            )
+    except Exception as e:
+        return JSONResponse(
+            status_code=400, content={"message": f"Failed to delete player: {str(e)}"}
         )
