@@ -1,7 +1,9 @@
 import pygame
+import requests
 from views.ui_elements import draw_text
 
 SCREEN_SIZE = (1280, 720)
+LOGIN_URL = "http://localhost:8000/api/player/login"
 
 
 def menu():
@@ -58,7 +60,24 @@ def menu():
                     active_box2 = False
                 if button_box.collidepoint(event.pos) and text1 and text2:
                     player_name = text1
-                    return player_name
+                    try:
+                        response = requests.post(
+                            LOGIN_URL, json={"username": text1, "password": text2}
+                        )
+                        response.raise_for_status()
+                        token = response.json().get("token")
+                        print(f"Login successful. Token: {token}")
+                        return player_name
+                    except requests.exceptions.RequestException as e:
+                        if isinstance(e, requests.exceptions.HTTPError):
+                            if response.status_code == 400:
+                                print("Bad request. Please check your input.")
+                            elif response.status_code == 500:
+                                print("Server error. Please try again later.")
+                        else:
+                            print(
+                                "Failed to connect to the server. Please check the URL or your internet connection."
+                            )
                 color1 = COLOR_ACTIVE if active_box1 else COLOR_INACTIVE
                 color2 = COLOR_ACTIVE if active_box2 else COLOR_INACTIVE
             if event.type == pygame.KEYDOWN:
