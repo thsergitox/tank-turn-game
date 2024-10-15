@@ -1,7 +1,7 @@
 from views.menu_view import menu
 from views.stats_view import show_stats
 from models.tank import *
-from core import ObjectController, GameMannager
+from core import ObjectController, GameManager
 import pygame
 
 CLOCK = None
@@ -10,13 +10,13 @@ RUNNING = True
 
 OBJECT_CONTROLLER = ObjectController()
 
-GAME_MANNAGER = GameMannager()
+GAME_MANAGER = GameManager()
 
 PLAYER1 = LightTank(OBJECT_CONTROLLER, 100, 500)
 PLAYER2 = LightTank(OBJECT_CONTROLLER, 1000, 500)
 
-GAME_MANNAGER.AddPlayer(PLAYER1)
-GAME_MANNAGER.AddPlayer(PLAYER2)
+GAME_MANAGER.AddPlayer(PLAYER1)
+GAME_MANAGER.AddPlayer(PLAYER2)
 
 FLOOR = pygame.Rect(0, 600, 1280, 120)
 
@@ -32,18 +32,19 @@ def start():
 def update():
     global RUNNING, CLOCK, OBJECT_CONTROLLER
     while RUNNING:
+        OBJECT_CONTROLLER.update()
+        GAME_MANAGER.Update()
+
         OBJECT_CONTROLLER.screen.fill("skyblue")
         pygame.draw.rect(OBJECT_CONTROLLER.screen, "brown", FLOOR)
-
-        OBJECT_CONTROLLER.update()
-        GAME_MANNAGER.Update()
+        OBJECT_CONTROLLER.draw()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUNNING = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    GAME_MANNAGER.NextPhase()
+                    GAME_MANAGER.NextPhase()
 
         pygame.display.update()
         CLOCK.tick(60)
