@@ -1,9 +1,17 @@
 import pygame
+from enum import Enum
 
 
-class GameMannager:
+class EPhase(Enum):
+    MOVEMENT = 0
+    AIM = 1
+    SHOOT = 2
+    WAITING_SHOOT = 3
+
+
+class GameManager:
     turn = 0
-    phase = 0
+    phase = EPhase.MOVEMENT
     players = []
     key = None
 
@@ -20,40 +28,37 @@ class GameMannager:
 
     def MovementPhase(self):
         # print(f"Player {self.turn} moving")
-        direction = 0
-        if self.key[pygame.K_LEFT]:
-            direction = -1
-        elif self.key[pygame.K_RIGHT]:
-            direction = 1
+        direction = self.key[pygame.K_RIGHT] - self.key[pygame.K_LEFT]
 
         self.players[self.turn].move(direction)
 
     def AimPhase(self):
         # print(f"Player {self.turn} aiming")
 
-        direction = 0
-        if self.key[pygame.K_LEFT]:
-            direction = -1
-        elif self.key[pygame.K_RIGHT]:
-            direction = 1
+        direction = self.key[pygame.K_RIGHT] - self.key[pygame.K_LEFT]
 
         self.players[self.turn].aim(direction)
 
     def ShootPhase(self):
         # print(f"Player {self.turn} Shooting")
         self.players[self.turn].shoot()
+        self.NextPhase()
 
     def Update(self):
         self.key = pygame.key.get_pressed()
-        if self.phase == 0:
+        if self.phase == EPhase.MOVEMENT:
             self.MovementPhase()
-        elif self.phase == 1:
+        elif self.phase == EPhase.AIM:
             self.AimPhase()
-        elif self.phase == 2:
+        elif self.phase == EPhase.SHOOT:
             self.ShootPhase()
 
+    # call it when bullet despawns
+    def end_turn(self):
+        self.NextPlayer()
+        self.phase = EPhase.MOVEMENT
+
     def NextPhase(self):
-        self.phase += 1
-        if self.phase > 2:
-            self.phase = 0
-            self.NextPlayer()
+        if self.phase == EPhase.WAITING_SHOOT:
+            return
+        self.phase = EPhase(self.phase.value + 1)

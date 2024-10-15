@@ -8,5 +8,5 @@ class LightTank(BaseTank):
         super().__init__(objectController, x, y, COLOR_LIGHT_TANK, 60, 20, 50)
 
     def shoot(self):
-        print("Light tank shoots!")
+        super().shoot()
         return self.damage

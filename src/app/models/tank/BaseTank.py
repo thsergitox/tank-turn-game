@@ -1,7 +1,9 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from pygame import Vector2
 import pygame
 import math
 
+from models.tank.cannon.cannon import Cannon
 from core.base_object import BaseObject
 
 
@@ -15,35 +17,38 @@ class BaseTank(BaseObject):
         self.movement = movement
         self.actual_movement = movement
         self.angle = 0
+        self.cannon = Cannon(Vector2(self.center))
 
     def start(self):
-        pass
+        self.cannon.start()
 
     def update(self):
-        pass
+        self.cannon.update()
 
     def end(self):
         pass
 
-    @abstractmethod
     def shoot(self):
-        pass
+        self.cannon.shoot()
 
     def aim(self, direction: int):
-        # perform rotation arround a pivot point
-        # positive direction means left till 180 degrees
-        # negative direction means right till 0 degrees
-        print(direction)
+        self.angle += (self.angle < 180 and direction > 0) - (
+            self.angle > 0 and direction < 0
+        )
+        self.cannon.move(Vector2(self.center), self.angle)
 
     def move(self, direction: int):
         if self.actual_movement > 0:
             self.move_ip(direction, 0)
+            self.cannon.rect.move_ip(direction, 0)
+            self.cannon.move(Vector2(self.center), self.angle)
             self.actual_movement -= math.fabs(direction)
 
     def die(self):
         print(f"{self.__class__.__name__} has been destroyed!")
 
     def draw(self, screen):
+        self.cannon.draw(screen)
         pygame.draw.rect(screen, self.color, self)
 
     # def draw_health_bar(self, screen):
