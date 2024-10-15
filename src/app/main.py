@@ -1,7 +1,8 @@
-import pygame
+from views.menu_view import menu
+from views.stats_view import show_stats
 from core import ObjectController
 from models.tank import *
-from core import ObjectController
+import pygame
 
 CLOCK = None
 SCREEN_SIZE = (1280, 720)
@@ -45,6 +46,10 @@ def end():
 
 
 if __name__ == "__main__":
-    start()
-    update()
-    end()
+    player_name = menu()
+    if player_name:
+        if show_stats(player_name):
+            if RUNNING:
+                start()
+                update()
+                end()

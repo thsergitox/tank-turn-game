@@ -56,3 +56,5 @@ pytest
 trio
 asgi_lifespan
 pytest_asyncio
+
+websockets
