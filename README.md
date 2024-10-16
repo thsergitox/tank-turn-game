@@ -33,22 +33,98 @@ The project is divided into two main parts: the game client and the backend serv
   - `tests/`: Backend tests
   - `features/`: Behavior-driven development features
 
+### Grafana (`grafana/` and `grafana_data`)
+- `grafana`:
+  - `dashboards`: Containts .json dashsboards to import.
+  - `grafan.ini`: Configuration SMTP file for alerts.
+- `grafana_data`: To initialize volumen.
+
+### Prometheus (`prometheus_data`):
+- `prometheus_data`:
+  - `prometheus.yml`: Prometheus configuration file,
+
+### Docs (`docs/`):
+- `docs`: Contains Markdowns with the contributions of each member.
+
+
+## Requirements
+
+For this project we are using [Python >= 3.12](https://www.python.org/downloads/) and [Docker Engine >= 27](https://docs.docker.com), it is not test in other versions.
+
 ## Setup and Installation
 
-1. Clone the repository
-2. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Set up the MongoDB database and backend server with docker compose
-    ```
-    docker compose up --build -d
-    ```
-4. Run the game client:
-   ```
-   cd src
-   python main.py
-   ```
+Due we are using `pygame` for our projectm we only used Docker for the backend, so you will need to setup and python enviroment a build the containers wiht `docker compose`
+
+Using `run.sh` file
+
+1. Activate permissioons for `run.sh` file.
+  
+```
+chmod +x ./run.sh
+```
+
+2. Run the script file.
+
+```
+sudo ./run.sh
+```
+
+Enjoy our game.
+
+
+Manually setup.
+
+1. First, create a `grafana_data` directory:
+
+```
+mkdir grafa_data
+```
+
+2. Now let's build our containers.
+```
+docker compose up --build -d
+```
+
+This commando builds our container in `compose.yml`.
+```
+Our container:
+  prometheus        
+  mongodb           
+  mongodb_exporter  
+  grafana            
+  backend         
+```
+
+If you want to see any container's log, you cand execute:
+```
+docker compose logs <container_name>
+```
+
+Once it is completed our backend at `localhost:8000`, let's to initialize our game.
+
+1. Let's create a python enviroment:
+```
+python3 -m venv venv
+```
+
+2. Activate it, if you are in linux run this:
+```
+source venv/bin/activate
+```
+
+3. Install the required dependencies:
+```
+pip install -r requirements.txt
+```
+
+
+4. Finished, let's enjoy our game:
+```
+python3 src/app/main.py
+```
+
+
+
 
 ## Development
 
@@ -64,3 +140,4 @@ The project includes a GitHub Actions workflow (`ci.yml`) for continuous integra
 
 For detailed information, please refer to the following documentation:
 - [Answers](./docs/ANSWERS.md): Answer for Midterm Exam.
+
