@@ -7,6 +7,7 @@ class HeavyTank(BaseTank):
     def __init__(self, objectController, x, y):
         super().__init__(objectController, x, y, COLOR_HEAVY_TANK, 150, 50, 25)
 
-    def shoot(self):
+    def shoot(self, target):
+        super().shoot(target)
         print("Heavy tank shoots!")
         return self.damage
