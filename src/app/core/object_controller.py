@@ -8,8 +8,11 @@ class ObjectController:
 
     def update(self):
         for obj in self.list:
-            obj.draw(self.screen)
             obj.update()
+
+    def draw(self):
+        for obj in self.list:
+            obj.draw(self.screen)
 
     def end(self):
         for obj in self.list:

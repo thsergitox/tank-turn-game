@@ -1,3 +1,5 @@
 pygame
 pip-audit
 pre-commit
+behave
+pytest
