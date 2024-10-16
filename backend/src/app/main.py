@@ -1,9 +1,8 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from app.database.mongo.connection import MongoConnection
 from app.config import settings
 from app.routes import router
 from prometheus_fastapi_instrumentator import Instrumentator, metrics
-import jwt
 from rich.console import Console
 from rich.markdown import Markdown
 from contextlib import asynccontextmanager
