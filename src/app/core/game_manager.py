@@ -29,10 +29,9 @@ class GameManager:
         PLAYERS.append(player)
 
     def MovementPhase(self):
-        # print(f"Player {TURN} moving")
         direction = KEY[pygame.K_RIGHT] - KEY[pygame.K_LEFT]
-
-        PLAYERS[TURN].move(direction)
+        if direction != 0:  # Only move if there's a non-zero direction
+            PLAYERS[TURN].move(direction)
 
     def AimPhase(self):
         # print(f"Player {TURN} aiming")

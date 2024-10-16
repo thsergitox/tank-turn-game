@@ -63,7 +63,9 @@ class BaseTank(BaseObject):
 
     def move(self, direction: int):
         """Move the tank horizontally."""
-        if self.actual_movement > 0:
+        if (
+            self.actual_movement > 0 and direction != 0
+        ):  # Only move and decrease stamina if there's a non-zero direction
             self.x += direction
             if self.cannon.rect is not None:
                 self.cannon.rect.move_ip(direction, 0)
