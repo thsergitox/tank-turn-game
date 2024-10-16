@@ -68,7 +68,7 @@ class PlayerService:
             dict: Un diccionario con el mensaje de inicio de sesión.
         """
         if not await self.player_queries.it_exists(name):
-            raise Exception("Player not found, please register in /register")
+            raise Exception("Player not found")
 
         try:
             result = await self.player_queries.login(name)
@@ -89,7 +89,7 @@ class PlayerService:
                 JWT_SECRET_KEY,
                 algorithm="HS256",
             )
-            return {"message": "Login successful", "token": token}
+            return {"message": "Login successful", "token": token, "name": name}
         except Exception as e:
             raise Exception("An error occurred while logging in")
 
@@ -102,7 +102,7 @@ class PlayerService:
     async def get_player_by_name(self, player_name: str) -> dict:
         return await self.player_queries.get_player_by_name(player_name)
 
-    async def update_player(self, token: str) -> bool:
+    async def update_player(self, player: dict) -> bool:
         """
         Actualiza un jugador existente.
 
@@ -113,13 +113,18 @@ class PlayerService:
         Returns:
             bool: True si la actualización fue exitosa, False en caso contrario.
         """
-
-        name = jwt.decode(token, JWT_SECRET_KEY, algorithms=["HS256"]).get("name")
-        if not await self.player_queries.it_exists(name):
+        if not await self.player_queries.it_exists(player["name"]):
             raise Exception("Player not found")
-        player = await self.player_queries.get_player_by_name(token)
-        # TODO: Implementar lógica para actualizar el jugador.
-        return await self.player_queries.update_player(player)
+        response_player = await self.player_queries.get_player_by_name(player["name"])
+        response_player = response_player["player"]
+        response_player["total_damage"] += player["damage"]
+
+        if player["result"]:
+            response_player["total_wins"] += 1
+        else:
+            response_player["total_losses"] += 1
+
+        return await self.player_queries.update_player(response_player)
 
     async def delete_player(self, player_name: str) -> bool:
         """

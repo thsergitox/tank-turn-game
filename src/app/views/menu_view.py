@@ -5,6 +5,7 @@ from config import settings
 
 SCREEN_SIZE = (1280, 720)
 LOGIN_URL = settings.API_URL + "/player/login"
+REGISTER_URL = settings.API_URL + "/player/register"
 
 
 def menu():
@@ -29,18 +30,24 @@ def menu():
     COLOR_BUTTON = pygame.Color("green")
     COLOR_BUTTON_HOVER = pygame.Color("limegreen")
 
-    # Cuadros de entrada y botón
-    input_box1 = pygame.Rect(490, 250, 300, 60)
-    input_box2 = pygame.Rect(490, 350, 300, 60)
-    button_box = pygame.Rect(540, 460, 200, 60)
+    # Cuadros de entrada y botones para dos jugadores
+    input_boxes = [
+        pygame.Rect(190, 250, 300, 60),  # Left side
+        pygame.Rect(190, 350, 300, 60),  # Left side
+        pygame.Rect(790, 250, 300, 60),  # Right side
+        pygame.Rect(790, 350, 300, 60),  # Right side
+    ]
+    button_boxes = [
+        pygame.Rect(240, 420, 200, 60),  # Left side Login
+        pygame.Rect(240, 500, 200, 60),  # Left side Register
+        pygame.Rect(840, 420, 200, 60),  # Right side Login
+        pygame.Rect(840, 500, 200, 60),  # Right side Register
+    ]
 
-    color1 = COLOR_INACTIVE
-    color2 = COLOR_INACTIVE
-    active_box1 = False
-    active_box2 = False
-    text1 = ""
-    text2 = ""
-    player_name = None
+    colors = [COLOR_INACTIVE] * 4
+    active_boxes = [False] * 4
+    texts = [""] * 4
+    player_names = [None, None]
 
     # Para la animación del título
     title_angle = 0
@@ -51,51 +58,55 @@ def menu():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if input_box1.collidepoint(event.pos):
-                    active_box1 = not active_box1
-                else:
-                    active_box1 = False
-                if input_box2.collidepoint(event.pos):
-                    active_box2 = not active_box2
-                else:
-                    active_box2 = False
-                if button_box.collidepoint(event.pos) and text1 and text2:
-                    player_name = text1
-                    try:
-                        response = requests.post(
-                            LOGIN_URL, json={"username": text1, "password": text2}
-                        )
-                        response.raise_for_status()
-                        token = response.json().get("token")
-                        print(f"Login successful. Token: {token}")
-                        return player_name
-                    except requests.exceptions.RequestException as e:
-                        if isinstance(e, requests.exceptions.HTTPError):
-                            if response.status_code == 400:
-                                print("Bad request. Please check your input.")
-                            elif response.status_code == 500:
-                                print("Server error. Please try again later.")
-                        else:
-                            print(
-                                "Failed to connect to the server. Please check the URL or your internet connection."
+                for i in range(4):
+                    if input_boxes[i].collidepoint(event.pos):
+                        active_boxes[i] = not active_boxes[i]
+                    else:
+                        active_boxes[i] = False
+                for i in range(4):
+                    if (
+                        button_boxes[i].collidepoint(event.pos)
+                        and texts[i // 2 * 2]
+                        and texts[i // 2 * 2 + 1]
+                    ):
+                        url = LOGIN_URL if i % 2 == 0 else REGISTER_URL
+                        try:
+                            response = requests.post(
+                                url,
+                                json={
+                                    "username": texts[i // 2 * 2],
+                                    "password": texts[i // 2 * 2 + 1],
+                                },
                             )
-                color1 = COLOR_ACTIVE if active_box1 else COLOR_INACTIVE
-                color2 = COLOR_ACTIVE if active_box2 else COLOR_INACTIVE
+                            response.raise_for_status()
+                            player_names[i // 2] = texts[i // 2 * 2]
+                            action = "login" if i % 2 == 0 else "register"
+                            print(f"Player {i // 2 + 1} {action} successful.")
+                        except requests.exceptions.RequestException as e:
+                            if isinstance(e, requests.exceptions.HTTPError):
+                                if response.status_code == 400:
+                                    print("Bad request. Please check your input.")
+                                elif response.status_code == 500:
+                                    print("Server error. Please try again later.")
+                                continue
+                            else:
+                                print(
+                                    "Failed to connect to the server. Please check the URL or your internet connection."
+                                )
+                            continue
+                colors = [
+                    COLOR_ACTIVE if active else COLOR_INACTIVE
+                    for active in active_boxes
+                ]
             if event.type == pygame.KEYDOWN:
-                if active_box1:
-                    if event.key == pygame.K_RETURN:
-                        active_box1 = False
-                    elif event.key == pygame.K_BACKSPACE:
-                        text1 = text1[:-1]
-                    else:
-                        text1 += event.unicode
-                if active_box2:
-                    if event.key == pygame.K_RETURN:
-                        active_box2 = False
-                    elif event.key == pygame.K_BACKSPACE:
-                        text2 = text2[:-1]
-                    else:
-                        text2 += event.unicode
+                for i in range(4):
+                    if active_boxes[i]:
+                        if event.key == pygame.K_RETURN:
+                            active_boxes[i] = False
+                        elif event.key == pygame.K_BACKSPACE:
+                            texts[i] = texts[i][:-1]
+                        else:
+                            texts[i] += event.unicode
 
         screen.blit(background, (0, 0))
 
@@ -108,35 +119,55 @@ def menu():
         title_angle += 0.05
 
         # Cuadros de entrada
-        txt_surface1 = input_font.render(text1, True, color1)
-        txt_surface2 = input_font.render(text2, True, color2)
-        width = max(300, txt_surface1.get_width() + 10)
-        input_box1.w = width
-        input_box2.w = width
-        screen.blit(txt_surface1, (input_box1.x + 5, input_box1.y + 5))
-        screen.blit(txt_surface2, (input_box2.x + 5, input_box2.y + 5))
-        pygame.draw.rect(screen, color1, input_box1, 2)
-        pygame.draw.rect(screen, color2, input_box2, 2)
+        for i in range(4):
+            txt_surface = input_font.render(texts[i], True, colors[i])
+            width = max(300, txt_surface.get_width() + 10)
+            input_boxes[i].w = width
+            screen.blit(txt_surface, (input_boxes[i].x + 5, input_boxes[i].y + 5))
+            pygame.draw.rect(screen, colors[i], input_boxes[i], 2)
 
         # Etiquetas para los cuadros de entrada
         draw_text(
-            screen, "Usuario", input_font, COLOR_TEXT, pygame.Rect(490, 200, 300, 50)
+            screen, "Usuario 1", input_font, COLOR_TEXT, pygame.Rect(190, 200, 300, 50)
         )
         draw_text(
-            screen, "Contraseña", input_font, COLOR_TEXT, pygame.Rect(490, 300, 300, 50)
+            screen,
+            "Contraseña 1",
+            input_font,
+            COLOR_TEXT,
+            pygame.Rect(190, 300, 300, 50),
+        )
+        draw_text(
+            screen, "Usuario 2", input_font, COLOR_TEXT, pygame.Rect(790, 200, 300, 50)
+        )
+        draw_text(
+            screen,
+            "Contraseña 2",
+            input_font,
+            COLOR_TEXT,
+            pygame.Rect(790, 300, 300, 50),
         )
 
-        # Botón con efecto hover
+        # Botones con efecto hover
         mouse_pos = pygame.mouse.get_pos()
-        button_color = (
-            COLOR_BUTTON_HOVER if button_box.collidepoint(mouse_pos) else COLOR_BUTTON
-        )
-        pygame.draw.rect(screen, button_color, button_box)
-        button_text = button_font.render("Ingresar", True, COLOR_TEXT)
-        screen.blit(button_text, (button_box.x + 35, button_box.y + 10))
+        for i in range(4):
+            button_color = (
+                COLOR_BUTTON_HOVER
+                if button_boxes[i].collidepoint(mouse_pos)
+                else COLOR_BUTTON
+            )
+            pygame.draw.rect(screen, button_color, button_boxes[i])
+            button_text = button_font.render(
+                "Login" if i % 2 == 0 else "Register", True, COLOR_TEXT
+            )
+            screen.blit(button_text, (button_boxes[i].x + 35, button_boxes[i].y + 10))
 
         pygame.display.flip()
         clock.tick(30)
 
+        # Verificar si ambos jugadores han ingresado
+        if all(player_names):
+            running = False
+
     pygame.quit()
-    return None
+    return player_names
