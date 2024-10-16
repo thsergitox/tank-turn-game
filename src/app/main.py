@@ -28,6 +28,7 @@ def start():
     OBJECT_CONTROLLER.screen = pygame.display.set_mode(SCREEN_SIZE)
     CLOCK = pygame.time.Clock()
     OBJECT_CONTROLLER.start()
+    OBJECT_CONTROLLER.start()
 
 
 def update():
@@ -48,10 +49,13 @@ def update():
                     GAME_MANAGER.NextPhase()
 
         pygame.display.update()
+        pygame.display.update()
         CLOCK.tick(60)
 
 
 def end():
+    OBJECT_CONTROLLER.end()
+    OBJECT_CONTROLLER.end()
     OBJECT_CONTROLLER.end()
     OBJECT_CONTROLLER.end()
     pygame.quit()
