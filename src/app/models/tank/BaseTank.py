@@ -30,7 +30,7 @@ class BaseTank(BaseObject):
         self.actual_health = health
         self.damage = damage
         self.movement = movement
-        self.actual_movement = movement
+        self.actual_movement = movement  # This will represent the stamina
         self.angle = 0
         self.is_alive = True
 
@@ -69,7 +69,7 @@ class BaseTank(BaseObject):
                 self.cannon.rect.move_ip(direction, 0)
             else:
                 print("Warning: Cannon rect is None. Make sure start() is called.")
-            self.actual_movement -= 1
+            self.actual_movement -= 1  # Decrease stamina
 
     def recieve_damage(self, damage):
         """Handle incoming damage and check for destruction."""
@@ -90,6 +90,7 @@ class BaseTank(BaseObject):
         self.cannon.draw(screen)
         pygame.draw.rect(screen, self.color, self)
         self.draw_health_bar(screen)
+        self.draw_stamina_bar(screen)
 
     def draw_health_bar(self, screen):
         """Draw the health bar above the tank."""
@@ -114,3 +115,33 @@ class BaseTank(BaseObject):
             (0, 240, 0),
             (frame_bar_x, frame_bar_y, current_health_width, health_bar_height),
         )
+
+    def draw_stamina_bar(self, screen):
+        """Draw the stamina bar above the tank."""
+        stamina_bar_width = self.size_x * 0.5
+        stamina_bar_height = 5
+
+        # Calculate stamina bar position
+        frame_bar_x = self.x + self.size_x / 2 - stamina_bar_width / 2
+        frame_bar_y = (
+            self.y - 3 * stamina_bar_height
+        )  # Position it above the health bar
+
+        # Draw stamina bar frame
+        pygame.draw.rect(
+            screen,
+            (200, 200, 200),
+            (frame_bar_x, frame_bar_y, stamina_bar_width, stamina_bar_height),
+        )
+
+        # Draw current stamina
+        current_stamina_width = self.actual_movement / self.movement * stamina_bar_width
+        pygame.draw.rect(
+            screen,
+            (40, 40, 240),  # Blue color for stamina
+            (frame_bar_x, frame_bar_y, current_stamina_width, stamina_bar_height),
+        )
+
+    def reset_movement(self):
+        """Reset the tank's movement at the start of its turn."""
+        self.actual_movement = self.movement
