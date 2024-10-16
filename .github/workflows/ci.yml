@@ -17,9 +17,17 @@ jobs:
         sudo apt-get update
         sudo apt-get install docker-compose
       
+    - name: Create grafana_data directory
+      run: |
+        mkdir grafana_data
+      
     - name: Build and run containers
       run: |
         docker compose -f compose.yml up -d --build
+    
+    - name: Run tests
+      run: |
+        docker exec backend python -m pytest tests/
 
   black-formatter:
     name: Black Code Formatter
