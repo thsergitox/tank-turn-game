@@ -31,7 +31,6 @@ Constants:
 
 
 def menu_view(screen, clock, background):
-    pygame.init()
     pygame.display.set_caption("Tank Turn Game")
     # Fuentes
     title_font = pygame.font.Font(None, 100)
@@ -64,14 +63,14 @@ def menu_view(screen, clock, background):
     texts = [""] * 4
     player_names = [None, None]
 
-    # Para la animación del título
+    # For title animation
     title_angle = 0
 
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                return None, None
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for i in range(4):
                     if input_boxes[i].collidepoint(event.pos):
@@ -184,5 +183,4 @@ def menu_view(screen, clock, background):
         if all(player_names):
             running = False
 
-    pygame.quit()
     return player_names

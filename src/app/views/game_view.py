@@ -24,7 +24,6 @@ Constants:
 
 
 def game_view(screen, clock):
-    running = True
     object_controller = ObjectController()
     object_controller.screen = screen
     object_controller.start()
@@ -39,14 +38,8 @@ def game_view(screen, clock):
 
     floor = pygame.Rect(0, 600, screen.get_width(), 120)
 
+    running = True
     while running:
-        object_controller.update()
-        game_manager.Update()
-
-        screen.fill("skyblue")
-        pygame.draw.rect(screen, "brown", floor)
-        object_controller.draw()
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -54,7 +47,14 @@ def game_view(screen, clock):
                 if event.key == pygame.K_SPACE:
                     game_manager.NextPhase()
 
-        pygame.display.update()
+        object_controller.update()
+        game_manager.Update()
+
+        screen.fill("skyblue")
+        pygame.draw.rect(screen, "brown", floor)
+        object_controller.draw()
+
+        pygame.display.flip()
         clock.tick(60)
 
     object_controller.end()
