@@ -31,7 +31,53 @@ services:
       start_period: 40s
 
 
+  mongodb_exporter:
+    image: percona/mongodb_exporter:0.41.2
+    container_name: mongodb_exporter
+    command:
+      - '--mongodb.uri=mongodb://root:password@mongodb:27017/db_test?authSource=admin'
+      - '--compatible-mode'
+      - '--collector.diagnosticdata'
+      - '--collector.replicasetstatus'
+      - '--collector.dbstats'
+      - '--collector.topmetrics'
+    ports:
+      - "9216:9216"
+    depends_on:
+      - mongodb
+
+  prometheus:
+    image: prom/prometheus:v2.55.0-rc.0
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+
+  grafana:
+    image: grafana/grafana:11.0.6
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+
 
 volumes:
+  prometheus_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./prometheus_data
+  grafana_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./grafana_data
   mongo-data:
-    

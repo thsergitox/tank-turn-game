@@ -5,6 +5,7 @@ import bcrypt
 import datetime
 from app.config import settings
 from app.database.mongo.connection import get_database
+from app.metrics import TOTAL_DAMAGE, TOTAL_GAMES
 
 JWT_SECRET_KEY = settings.JWT_SECRET_KEY
 SALT_ROUNDS = settings.SALT_ROUNDS
@@ -124,7 +125,15 @@ class PlayerService:
         else:
             response_player["total_losses"] += 1
 
-        return await self.player_queries.update_player(response_player)
+        try:
+            result = await self.player_queries.update_player(response_player)
+            TOTAL_DAMAGE.labels(player["name"]).set(response_player["total_damage"])
+            TOTAL_GAMES.labels(player["name"]).set(
+                response_player["total_wins"] + response_player["total_losses"]
+            )
+            return result
+        except Exception as e:
+            raise Exception(f"An error occurred while updating the player")
 
     async def delete_player(self, player_name: str) -> bool:
         """

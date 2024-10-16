@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
 from app.services.player_service import PlayerService, get_player_service
 from pydantic import BaseModel
+from app.metrics import LOGGEDIN_PLAYERS, REGISTERED_PLAYERS, TOTAL_DAMAGE, TOTAL_GAMES
 
 router = APIRouter(prefix="/player")
 
@@ -44,6 +45,7 @@ async def login(
             "name": player["name"],
         }
         response = JSONResponse(content=response)
+        LOGGEDIN_PLAYERS.labels(username).inc()
         return response
     except Exception as e:
         if str(e) == "Player not found":
@@ -72,6 +74,7 @@ async def register(
         print(player)
         response = {"message": "Registration successful", "token": player["token"]}
         response = JSONResponse(content=response)
+        REGISTERED_PLAYERS.labels(username).inc()
         return response
     except Exception as e:
         return JSONResponse(
