@@ -7,17 +7,32 @@ SCREEN_SIZE = (1280, 720)
 LOGIN_URL = settings.API_URL + "/player/login"
 REGISTER_URL = settings.API_URL + "/player/register"
 
+"""
+This module contains the menu_view function which handles the menu screen for the game.
 
-def menu():
+The menu_view function:
+- Initializes Pygame and sets up the screen
+- Loads and scales the background image
+- Sets up fonts and colors for the UI elements
+- Creates input boxes for username and password for two players
+- Creates buttons for login and register
+- Handles user input for button clicks and text input
+- Animates the title text
+- Returns the player names if both players have logged in or registered, otherwise returns None
+
+Dependencies:
+- pygame: For creating the game window and handling events
+- requests: For making HTTP requests to the server
+- config: For storing the API URL
+
+Constants:
+- SCREEN_SIZE: Tuple defining the dimensions of the game window (1280x720)
+"""
+
+
+def menu_view(screen, clock, background):
     pygame.init()
-    screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption("Tank Turn Game")
-    clock = pygame.time.Clock()
-
-    # Cargar y escalar la imagen de fondo
-    background = pygame.image.load("image.jpg").convert()
-    background = pygame.transform.scale(background, SCREEN_SIZE)
-
     # Fuentes
     title_font = pygame.font.Font(None, 100)
     input_font = pygame.font.Font(None, 50)
