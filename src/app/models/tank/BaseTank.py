@@ -9,8 +9,21 @@ from core.base_object import BaseObject
 
 
 class BaseTank(BaseObject):
-    def __init__(self, objectController, x, y, color, health, damage, movement):
-        super().__init__(objectController, x, y, 100, 50)
+    def __init__(
+        self,
+        objectController,
+        x,
+        y,
+        color,
+        health,
+        damage,
+        movement,
+        size_x=100,
+        size_y=70,
+    ):
+        super().__init__(objectController, x, y, size_x, size_y)
+        self.size_x = size_x
+        self.size_y = size_y
         self.color = color
         self.health = health
         self.actual_health = health
@@ -18,10 +31,6 @@ class BaseTank(BaseObject):
         self.movement = movement
         self.actual_movement = movement
         self.angle = 0
-        self.pivot_aim_line_x = self.x + self.size_x * 0.75
-        self.pivot_aim_line_y = self.y + self.size_y * 0.5
-        self.aim_line_length = self.size_x * 0.65
-        self.width_aim_line = int(self.size_x * 0.35)
         self.cannon = Cannon(Vector2(self.center), self.damage)
         self.is_alive = True
 
@@ -68,8 +77,8 @@ class BaseTank(BaseObject):
         self.draw_health_bar(screen)
 
     def draw_health_bar(self, screen):
-        health_bar_width = 20
-        health_bar_height = 5
+        health_bar_width = self.size_x * 0.5
+        health_bar_height = 10
 
         # Fixed frame
         frame_bar_x = self.x + self.size_x / 2 - health_bar_width / 2
@@ -83,28 +92,10 @@ class BaseTank(BaseObject):
         )
 
         # Health bar
-        health_bar_width = self.health / self.max_health * health_bar_width
+        health_bar_width = self.actual_health / self.health * health_bar_width
 
         pygame.draw.rect(
             screen,
-            (0, 255, 0),
+            (0, 240, 0),
             (frame_bar_x, frame_bar_y, health_bar_width, health_bar_height),
         )
-
-        # Aim line
-        pygame.draw.line(
-            screen,
-            self.color,
-            (self.pivot_aim_line_x, self.pivot_aim_line_y),  # Start position (pivot)
-            (
-                self.pivot_aim_line_x + self.aim_line_length * math.cos(self.angle),
-                self.pivot_aim_line_y - self.aim_line_length * math.sin(self.angle),
-            ),
-            self.width_aim_line,
-        )
-
-    # Combat logic
-    def take_damage(self, damage):
-        self.health -= damage
-        if self.health <= 0:
-            self.die()
