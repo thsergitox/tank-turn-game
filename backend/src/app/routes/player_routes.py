@@ -41,7 +41,6 @@ async def login(
     try:
         # Attempt to login the player
         player = await player_service.login(username, password)
-        print(player)
         response = {
             "message": player["message"],
             "token": player["token"],
