@@ -12,7 +12,7 @@ def main():
     screen = pygame.display.set_mode(SCREEN_SIZE)
     clock = pygame.time.Clock()
 
-    # Load background image once
+    # Load background image
     background = pygame.image.load("image.jpg").convert()
     background = pygame.transform.scale(background, SCREEN_SIZE)
 

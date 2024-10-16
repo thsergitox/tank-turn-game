@@ -8,25 +8,15 @@ LOGIN_URL = settings.API_URL + "/player/login"
 REGISTER_URL = settings.API_URL + "/player/register"
 
 """
-This module contains the menu_view function which handles the menu screen for the game.
+Menu screen handler for the game.
 
-The menu_view function:
-- Initializes Pygame and sets up the screen
-- Loads and scales the background image
-- Sets up fonts and colors for the UI elements
-- Creates input boxes for username and password for two players
-- Creates buttons for login and register
-- Handles user input for button clicks and text input
-- Animates the title text
-- Returns the player names if both players have logged in or registered, otherwise returns None
+Features:
+- Pygame setup and UI elements
+- Login/register functionality for two players
+- Title animation
+- Player name return on successful login/register
 
-Dependencies:
-- pygame: For creating the game window and handling events
-- requests: For making HTTP requests to the server
-- config: For storing the API URL
-
-Constants:
-- SCREEN_SIZE: Tuple defining the dimensions of the game window (1280x720)
+Dependencies: pygame, requests, config
 """
 
 

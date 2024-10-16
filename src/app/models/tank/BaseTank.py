@@ -1,6 +1,5 @@
 from abc import abstractmethod
 from pygame import Vector2
-import math
 import pygame
 import math
 
@@ -22,6 +21,8 @@ class BaseTank(BaseObject):
         size_y=70,
     ):
         super().__init__(objectController, x, y, size_x, size_y)
+
+        # Tank properties
         self.size_x = size_x
         self.size_y = size_y
         self.color = color
@@ -31,28 +32,37 @@ class BaseTank(BaseObject):
         self.movement = movement
         self.actual_movement = movement
         self.angle = 0
-        self.cannon = Cannon(Vector2(self.center), self.damage)
         self.is_alive = True
 
+        # Initialize cannon
+        self.cannon = Cannon(Vector2(self.center), self.damage)
+
     def start(self):
+        """Initialize the tank and its components."""
         self.cannon.start()
 
     def update(self):
+        """Update the tank's state each frame."""
         self.cannon.update()
 
     def end(self):
+        """Clean up resources when the tank is destroyed."""
         pass
 
     def shoot(self, target):
+        """Fire the cannon at a target."""
         self.cannon.shoot(target)
 
     def aim(self, direction: int):
+        """Adjust the cannon's aim."""
+        # Limit angle between 0 and 180 degrees
         self.angle += (self.angle < 180 and direction > 0) - (
             self.angle > 0 and direction < 0
         )
         self.cannon.move(Vector2(self.center), self.angle)
 
     def move(self, direction: int):
+        """Move the tank horizontally."""
         if self.actual_movement > 0:
             self.x += direction
             if self.cannon.rect is not None:
@@ -62,16 +72,19 @@ class BaseTank(BaseObject):
             self.actual_movement -= 1
 
     def recieve_damage(self, damage):
-        print(f"{self.__class__.__name__} recieves {damage} damage")
+        """Handle incoming damage and check for destruction."""
+        print(f"{self.__class__.__name__} receives {damage} damage")
         self.actual_health -= damage
         if self.actual_health <= 0:
             self.die()
 
     def die(self):
+        """Handle the tank's destruction."""
         self.is_alive = False
         print(f"{self.__class__.__name__} has been destroyed!")
 
     def draw(self, screen):
+        """Render the tank on the screen."""
         if not self.is_alive:
             return
         self.cannon.draw(screen)
@@ -79,25 +92,25 @@ class BaseTank(BaseObject):
         self.draw_health_bar(screen)
 
     def draw_health_bar(self, screen):
+        """Draw the health bar above the tank."""
         health_bar_width = self.size_x * 0.5
         health_bar_height = 10
 
-        # Fixed frame
+        # Calculate health bar position
         frame_bar_x = self.x + self.size_x / 2 - health_bar_width / 2
         frame_bar_y = self.y - 2 * health_bar_height
 
-        # Draw frame
+        # Draw health bar frame
         pygame.draw.rect(
             screen,
             (200, 200, 200),
             (frame_bar_x, frame_bar_y, health_bar_width, health_bar_height),
         )
 
-        # Health bar
-        health_bar_width = self.actual_health / self.health * health_bar_width
-
+        # Draw current health
+        current_health_width = self.actual_health / self.health * health_bar_width
         pygame.draw.rect(
             screen,
             (0, 240, 0),
-            (frame_bar_x, frame_bar_y, health_bar_width, health_bar_height),
+            (frame_bar_x, frame_bar_y, current_health_width, health_bar_height),
         )
