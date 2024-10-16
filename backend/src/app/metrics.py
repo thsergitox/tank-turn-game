@@ -1,5 +1,6 @@
 from prometheus_client import Counter, Gauge
 
+# Define the Prometheus metrics
 LOGGEDIN_PLAYERS = Counter(
     "loggedin_player_total", "Total logged ins by player", ["player_name"]
 )

@@ -8,8 +8,11 @@ from rich.markdown import Markdown
 from contextlib import asynccontextmanager
 
 
+# Creamos un contexto de vida útil para la aplicación cuando inicia y finaliza
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Cuando la aplicación inicia
+
     # Print the banner
     console = Console()
     console.print(generate_markdown_banner())
@@ -20,6 +23,7 @@ async def lifespan(app: FastAPI):
     # Initialize the instrumentator
     instrumentator.expose(app)
     yield
+    # Cuando la aplicación finaliza
     await MongoConnection.close_mongo_connection()
 
 
@@ -32,6 +36,7 @@ app = FastAPI(
 )
 
 
+# Generamos un banner en Markdown para la aplicación
 def generate_markdown_banner():
     markdown = Markdown(
         """
@@ -49,8 +54,10 @@ Tank Turn Game API is a RESTful API that provides the backend for the Tank Turn 
     return markdown
 
 
+# Agregamos las rutas a la aplicación
 app.include_router(router, prefix="/api")
 
+# Instrumentamos la aplicación con Prometheus
 instrumentator = Instrumentator().instrument(app)
 
 instrumentator.add(

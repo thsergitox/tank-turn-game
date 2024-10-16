@@ -2,10 +2,14 @@ import pygame
 from core import ObjectController, GameManager
 from core.game_manager import PHASE, EPhase, TURN, PLAYERS
 from models.tank import LightTank, HeavyTank
+from config import settings
+import requests
 
 """
 Game view module: Handles game screen, initializes objects, and manages game loop.
 """
+
+UPDATE_URL = settings.API_URL + "/player/update"
 
 
 def game_view(screen, clock, player_names):
@@ -61,7 +65,8 @@ def game_view(screen, clock, player_names):
         # Check for game over condition
         if not player1.is_alive or not player2.is_alive:
             winner = player_names[1] if not player1.is_alive else player_names[0]
-            return show_game_over_screen(screen, winner, clock)
+            looser = player_names[0] if not player1.is_alive else player_names[1]
+            return show_game_over_screen(screen, winner, looser, clock)
 
         # Render game objects
         screen.fill("skyblue")
@@ -108,10 +113,21 @@ def get_turn_type():
         return "Unknown"
 
 
-def show_game_over_screen(screen, winner, clock):
+def show_game_over_screen(screen, winner, looser, clock):
     overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 128))  # Semi-transparent black overlay
     screen.blit(overlay, (0, 0))
+
+    response_win = requests.post(
+        UPDATE_URL, json={"name": winner, "damage": 100, "result": True}
+    )
+    response_loose = requests.post(
+        UPDATE_URL, json={"name": looser, "damage": 100, "result": False}
+    )
+
+    MESSAGE_RESPONSE = "Player updated successfully"
+    if response_win.status_code == 200 and response_loose.status_code == 200:
+        print(MESSAGE_RESPONSE)
 
     font = pygame.font.Font(None, 74)
     win_text = font.render(f"{winner} Wins!", True, (255, 255, 255))
