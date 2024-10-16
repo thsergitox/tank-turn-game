@@ -57,7 +57,7 @@ class GameManager:
             self.ShootPhase(PLAYERS[targetIndex])
 
         if self.check_win():
-            # Do something when winning
+            # TODO: Implement win screen
             return
 
     # call it when bullet despawns
