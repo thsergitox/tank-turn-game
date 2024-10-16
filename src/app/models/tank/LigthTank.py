@@ -6,7 +6,14 @@ COLOR_LIGHT_TANK = (50, 50, 200)  # Blueish
 class LightTank(BaseTank):
     def __init__(self, objectController, x, y):
         super().__init__(
-            objectController, x, y, COLOR_LIGHT_TANK, health=60, damage=20, movement=80
+            objectController,
+            x,
+            y,
+            COLOR_LIGHT_TANK,
+            health=60,
+            damage=20,
+            movement=200,
+            speed=3,
         )
 
     def shoot(self, target):

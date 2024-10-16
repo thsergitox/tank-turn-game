@@ -12,7 +12,8 @@ class StandardTank(BaseTank):
             COLOR_STANDARD_TANK,
             health=100,
             damage=30,
-            movement=65,
+            movement=150,
+            speed=2,
         )
 
     def shoot(self, target):

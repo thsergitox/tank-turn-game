@@ -17,6 +17,7 @@ class BaseTank(BaseObject):
         health,
         damage,
         movement,
+        speed,  # Add speed parameter
         size_x=100,
         size_y=70,
     ):
@@ -30,7 +31,8 @@ class BaseTank(BaseObject):
         self.actual_health = health
         self.damage = damage
         self.movement = movement
-        self.actual_movement = movement  # This will represent the stamina
+        self.actual_movement = movement  # This is the stamina
+        self.speed = speed
         self.angle = 0
         self.is_alive = True
 
@@ -63,15 +65,26 @@ class BaseTank(BaseObject):
 
     def move(self, direction: int):
         """Move the tank horizontally."""
-        if (
-            self.actual_movement > 0 and direction != 0
-        ):  # Only move and decrease stamina if there's a non-zero direction
-            self.x += direction
-            if self.cannon.rect is not None:
-                self.cannon.rect.move_ip(direction, 0)
+        if self.actual_movement > 0 and direction != 0:
+            move_amount = direction * self.speed  # Use speed to calculate movement
+            if abs(move_amount) <= self.actual_movement:
+                self.x += move_amount
+                if self.cannon.rect is not None:
+                    self.cannon.rect.move_ip(move_amount, 0)
+                else:
+                    print("Warning: Cannon rect is None. Make sure start() is called.")
+                self.actual_movement -= abs(
+                    move_amount
+                )  # Decrease stamina by amount moved
             else:
-                print("Warning: Cannon rect is None. Make sure start() is called.")
-            self.actual_movement -= 1  # Decrease stamina
+                # Move as far as stamina allows
+                max_move = (
+                    self.actual_movement if direction > 0 else -self.actual_movement
+                )
+                self.x += max_move
+                if self.cannon.rect is not None:
+                    self.cannon.rect.move_ip(max_move, 0)
+                self.actual_movement = 0
 
     def recieve_damage(self, damage):
         """Handle incoming damage and check for destruction."""
