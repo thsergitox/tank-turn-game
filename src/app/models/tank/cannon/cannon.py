@@ -1,15 +1,18 @@
 import pygame
 from pygame.math import Vector2
 import math
+
+from core.game_manager import GameManager
 from .Bullet import Bullet
 
 
 class Cannon:
-    def __init__(self, pivot):
+    def __init__(self, pivot, dmg):
         self.pivot = Vector2(pivot)
         self.actual_bullet = None
         self.angle = 0
         self.end_point = Vector2(0, 0)
+        self.dmg = dmg
 
     def start(self):
         self.image_orig = pygame.image.load("images/cannon.png")
@@ -23,8 +26,13 @@ class Cannon:
         self.cannon_length = self.image.get_size()[0]
 
     def update(self):
-        if self.actual_bullet:
-            self.actual_bullet.update()
+        if self.actual_bullet != None:
+            if self.actual_bullet.is_alive:
+                self.actual_bullet.update()
+            else:
+                self.actual_bullet = None
+                game_manager = GameManager()
+                game_manager.end_turn()
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -49,5 +57,5 @@ class Cannon:
             -self.cannon_length * math.sin(angle_rad),
         )
 
-    def shoot(self):
-        self.actual_bullet = Bullet(self.end_point, self.angle, 1000)
+    def shoot(self, target):
+        self.actual_bullet = Bullet(self.end_point, self.angle, 1000, self.dmg, target)

@@ -62,10 +62,10 @@ def end():
 
 
 if __name__ == "__main__":
-    player_name = menu()
-    if player_name:
-        if show_stats(player_name):
-            if RUNNING:
-                start()
-                update()
-                end()
+    # player_name = menu()
+    # if player_name:
+    #     if show_stats(player_name):
+    if RUNNING:
+        start()
+        update()
+        end()

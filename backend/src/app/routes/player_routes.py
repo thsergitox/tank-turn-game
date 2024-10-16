@@ -12,8 +12,9 @@ class InputData(BaseModel):
 
 
 class UpdateData(BaseModel):
-    token: str
-    # TODO: Add fields to update player data
+    name: str
+    damage: int
+    result: bool
 
 
 def is_valid_input_data(data: InputData):
@@ -37,10 +38,19 @@ async def login(
     try:
         player = await player_service.login(username, password)
         print(player)
-        response = {"message": player["message"], "token": player["token"]}
+        response = {
+            "message": player["message"],
+            "token": player["token"],
+            "name": player["name"],
+        }
         response = JSONResponse(content=response)
         return response
     except Exception as e:
+        if str(e) == "Player not found":
+            return JSONResponse(
+                status_code=404,
+                content={"message": "Player not found. Please register first."},
+            )
         return JSONResponse(
             status_code=400, content={"message": f"Login failed: {str(e)}"}
         )
@@ -109,8 +119,9 @@ async def update_player(
     response: Response,
     player_service: PlayerService = Depends(get_player_service),
 ):
+    request = request.dict()
     try:
-        result = await player_service.update_player(request.token)
+        result = await player_service.update_player(request)
         if result:
             return JSONResponse(content={"message": "Player updated successfully"})
         else:
