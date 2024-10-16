@@ -71,7 +71,7 @@ class GameManager:
         global PHASE
         if PHASE == EPhase.WAITING_SHOOT:
             return
-        PHASE = EPhase(PHASE.value + 1)
+        PHASE = EPhase((PHASE.value + 1) % 4)
         print(f"Phase: {PHASE}")
 
     def check_win(self):
