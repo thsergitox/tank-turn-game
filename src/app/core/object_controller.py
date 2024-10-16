@@ -1,6 +1,7 @@
 class ObjectController:
-    screen = None
-    list = []
+    def __init__(self):
+        self.screen = None
+        self.list = []
 
     def start(self):
         for obj in self.list:
@@ -17,3 +18,11 @@ class ObjectController:
     def end(self):
         for obj in self.list:
             obj.end()
+        self.list.clear()  # Clear the list after ending all objects
+
+    def add_object(self, obj):
+        self.list.append(obj)
+
+    def remove_object(self, obj):
+        if obj in self.list:
+            self.list.remove(obj)
