@@ -34,8 +34,7 @@ def main():
             continue
 
         # Game
-        game_result = game_view(screen, clock, player_names)
-        if not game_result:
+        if not game_view(screen, clock, player_names):
             running = False
 
     pygame.quit()
