@@ -17,7 +17,8 @@ class BaseTank(BaseObject):
         self.movement = movement
         self.actual_movement = movement
         self.angle = 0
-        self.cannon = Cannon(Vector2(self.center))
+        self.cannon = Cannon(Vector2(self.center), self.damage)
+        self.is_alive = True
 
     def start(self):
         self.cannon.start()
@@ -28,8 +29,8 @@ class BaseTank(BaseObject):
     def end(self):
         pass
 
-    def shoot(self):
-        self.cannon.shoot()
+    def shoot(self, target):
+        self.cannon.shoot(target)
 
     def aim(self, direction: int):
         self.angle += (self.angle < 180 and direction > 0) - (
@@ -45,11 +46,20 @@ class BaseTank(BaseObject):
             self.actual_movement -= math.fabs(direction)
 
     def die(self):
+        self.is_alive = False
         print(f"{self.__class__.__name__} has been destroyed!")
 
     def draw(self, screen):
+        if not self.is_alive:
+            return
         self.cannon.draw(screen)
         pygame.draw.rect(screen, self.color, self)
+
+    def recieve_damage(self, damage):
+        print(f"{self.__class__.__name__} recieves {damage} damage")
+        self.actual_health -= damage
+        if self.actual_health <= 0:
+            self.die()
 
     # def draw_health_bar(self, screen):
     #     health_bar_width = 20

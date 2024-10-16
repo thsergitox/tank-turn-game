@@ -9,56 +9,78 @@ class EPhase(Enum):
     WAITING_SHOOT = 3
 
 
-class GameManager:
-    turn = 0
-    phase = EPhase.MOVEMENT
-    players = []
-    key = None
+TURN = 0
+PHASE = EPhase.MOVEMENT
+PLAYERS = []
+KEY = None
 
+
+class GameManager:
     def GetCurrPlayer(self):
-        return self.players[self.turn]
+        return PLAYERS[TURN]
 
     def NextPlayer(self):
-        self.turn = (self.turn + 1) % len(self.players)
-        self.players[self.turn].actual_movement = self.players[self.turn].movement
+        global TURN, PLAYERS
+        TURN = (TURN + 1) % len(PLAYERS)
+        PLAYERS[TURN].actual_movement = PLAYERS[TURN].movement
         return self.GetCurrPlayer()
 
     def AddPlayer(self, player):
-        self.players.append(player)
+        PLAYERS.append(player)
 
     def MovementPhase(self):
-        # print(f"Player {self.turn} moving")
-        direction = self.key[pygame.K_RIGHT] - self.key[pygame.K_LEFT]
+        # print(f"Player {TURN} moving")
+        direction = KEY[pygame.K_RIGHT] - KEY[pygame.K_LEFT]
 
-        self.players[self.turn].move(direction)
+        PLAYERS[TURN].move(direction)
 
     def AimPhase(self):
-        # print(f"Player {self.turn} aiming")
+        # print(f"Player {TURN} aiming")
 
-        direction = self.key[pygame.K_RIGHT] - self.key[pygame.K_LEFT]
+        direction = KEY[pygame.K_RIGHT] - KEY[pygame.K_LEFT]
 
-        self.players[self.turn].aim(direction)
+        PLAYERS[TURN].aim(direction)
 
-    def ShootPhase(self):
-        # print(f"Player {self.turn} Shooting")
-        self.players[self.turn].shoot()
+    def ShootPhase(self, target):
+        # print(f"Player {TURN} Shooting")
+        PLAYERS[TURN].shoot(target)
         self.NextPhase()
 
     def Update(self):
-        self.key = pygame.key.get_pressed()
-        if self.phase == EPhase.MOVEMENT:
+        global KEY
+        KEY = pygame.key.get_pressed()
+        if PHASE == EPhase.MOVEMENT:
             self.MovementPhase()
-        elif self.phase == EPhase.AIM:
+        elif PHASE == EPhase.AIM:
             self.AimPhase()
-        elif self.phase == EPhase.SHOOT:
-            self.ShootPhase()
+        elif PHASE == EPhase.SHOOT:
+            targetIndex = (TURN + 1) % len(PLAYERS)
+            self.ShootPhase(PLAYERS[targetIndex])
+
+        if self.check_win():
+            # Do something when winning
+            return
 
     # call it when bullet despawns
     def end_turn(self):
-        self.NextPlayer()
-        self.phase = EPhase.MOVEMENT
+        global PHASE
+        if PHASE == EPhase.WAITING_SHOOT:
+            PHASE = EPhase.MOVEMENT
+            self.NextPlayer()
 
     def NextPhase(self):
-        if self.phase == EPhase.WAITING_SHOOT:
+        global PHASE
+        if PHASE == EPhase.WAITING_SHOOT:
             return
-        self.phase = EPhase(self.phase.value + 1)
+        PHASE = EPhase(PHASE.value + 1)
+        print(f"Phase: {PHASE}")
+
+    def check_win(self):
+        alive = 0
+        for player in PLAYERS:
+            if player.is_alive:
+                alive += 1
+        if alive == 1:
+            print(f"Player {TURN} wins!")
+            return True
+        return False
