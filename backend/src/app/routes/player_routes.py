@@ -7,10 +7,12 @@ from app.metrics import LOGGEDIN_PLAYERS, REGISTERED_PLAYERS, TOTAL_DAMAGE, TOTA
 # Create a router with a prefix for player-related routes
 router = APIRouter(prefix="/player")
 
+
 # Define a Pydantic model for input data
 class InputData(BaseModel):
     username: str
     password: str
+
 
 # Define a Pydantic model for update data
 class UpdateData(BaseModel):
@@ -18,12 +20,14 @@ class UpdateData(BaseModel):
     damage: int
     result: bool
 
+
 # Function to validate input data
 def is_valid_input_data(data: InputData):
     if data.username and data.password:
         return JSONResponse(
             status_code=400, content={"message": "Username and password are required"}
         )
+
 
 # Route for player login
 @router.post("/login")
@@ -59,6 +63,7 @@ async def login(
             status_code=400, content={"message": f"Login failed: {str(e)}"}
         )
 
+
 # Route for player registration
 @router.post("/register")
 async def register(
@@ -85,6 +90,7 @@ async def register(
             status_code=400, content={"message": f"Registration failed: {str(e)}"}
         )
 
+
 # Route to get all players
 @router.get("/all")
 async def get_all_players(
@@ -99,6 +105,7 @@ async def get_all_players(
         return JSONResponse(
             status_code=400, content={"message": f"Failed to get players: {str(e)}"}
         )
+
 
 # Route to delete a player by username
 @router.delete("/delete/{username}")
@@ -120,6 +127,7 @@ async def delete_player(
         return JSONResponse(
             status_code=400, content={"message": f"Failed to delete player: {str(e)}"}
         )
+
 
 # Route to update player information
 @router.post("/update")

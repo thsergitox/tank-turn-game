@@ -11,6 +11,7 @@ Game view module: Handles game screen, initializes objects, and manages game loo
 
 UPDATE_URL = settings.API_URL + "/player/update"
 
+
 def game_view(screen, clock, player_names):
     """
     Main game loop and rendering function.
@@ -112,13 +113,17 @@ def get_turn_type():
         return "Unknown"
 
 
-def show_game_over_screen(screen, winner,looser, clock):
+def show_game_over_screen(screen, winner, looser, clock):
     overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 128))  # Semi-transparent black overlay
     screen.blit(overlay, (0, 0))
 
-    response_win = requests.post(UPDATE_URL, json={"name": winner, "damage": 100, "result": True})  
-    response_loose = requests.post(UPDATE_URL, json={"name": looser, "damage": 100, "result": False})
+    response_win = requests.post(
+        UPDATE_URL, json={"name": winner, "damage": 100, "result": True}
+    )
+    response_loose = requests.post(
+        UPDATE_URL, json={"name": looser, "damage": 100, "result": False}
+    )
 
     MESSAGE_RESPONSE = "Player updated successfully"
     if response_win.status_code == 200 and response_loose.status_code == 200:
