@@ -1,6 +1,6 @@
 import pygame
 from core import ObjectController, GameManager
-from models.tank import LightTank
+from models.tank import LightTank, HeavyTank
 
 """
 Game view module: Handles game screen, initializes objects, and manages game loop.
@@ -27,7 +27,7 @@ def game_view(screen, clock):
 
     # Create and initialize players
     player1 = LightTank(object_controller, 100, 500)
-    player2 = LightTank(object_controller, 1000, 500)
+    player2 = HeavyTank(object_controller, 1000, 500)
     player1.start()
     player2.start()
 
