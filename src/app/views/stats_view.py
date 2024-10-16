@@ -4,16 +4,30 @@ import math
 
 SCREEN_SIZE = (1280, 720)
 
+"""
+This module contains the stats_view function which displays the player's statistics and provides options to start the game or exit.
 
-def show_stats(player_name):
-    pygame.init()
-    screen = pygame.display.set_mode(SCREEN_SIZE)
-    clock = pygame.time.Clock()
+The stats_view function:
+- Initializes Pygame and sets up the screen
+- Loads and scales the background image
+- Sets up fonts and colors for the UI elements
+- Creates buttons for starting the game and exiting
+- Displays the player's statistics
+- Handles user input for button clicks
+- Animates the title text
+- Returns True if the player chooses to start the game, False otherwise
 
-    # Cargar y escalar la imagen de fondo
-    background = pygame.image.load("image.jpg").convert()
-    background = pygame.transform.scale(background, SCREEN_SIZE)
+Dependencies:
+- pygame: For creating the game window and handling events
+- views.ui_elements: For drawing text and rounded rectangles
+- math: For title animation calculations
 
+Constants:
+- SCREEN_SIZE: Tuple defining the dimensions of the game window (1280x720)
+"""
+
+
+def stats_view(screen, clock, background, player):
     # Fuentes
     title_font = pygame.font.Font(None, 74)
     stats_font = pygame.font.Font(None, 50)
@@ -37,12 +51,12 @@ def show_stats(player_name):
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                return False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.collidepoint(event.pos):
                     return True
                 if exit_button.collidepoint(event.pos):
-                    running = False
+                    return False
 
         screen.blit(background, (0, 0))
 
@@ -59,7 +73,7 @@ def show_stats(player_name):
         padding = 50
         draw_text(
             screen,
-            f"Bienvenido, {player_name}",
+            f"Bienvenido, {player}",
             title_font,
             COLOR_TEXT,
             pygame.Rect(padding, 250, SCREEN_SIZE[0] - 2 * padding, 100),
@@ -120,5 +134,4 @@ def show_stats(player_name):
         pygame.display.flip()
         clock.tick(30)
 
-    pygame.quit()
     return False
