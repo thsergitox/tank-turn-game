@@ -33,6 +33,10 @@ def game_view(screen, clock):
     player1 = LightTank(object_controller, 100, 500)
     player2 = LightTank(object_controller, 1000, 500)
 
+    # Call start() on both tanks
+    player1.start()
+    player2.start()
+
     game_manager.AddPlayer(player1)
     game_manager.AddPlayer(player2)
 

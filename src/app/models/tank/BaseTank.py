@@ -54,10 +54,12 @@ class BaseTank(BaseObject):
 
     def move(self, direction: int):
         if self.actual_movement > 0:
-            self.move_ip(direction, 0)
-            self.cannon.rect.move_ip(direction, 0)
-            self.cannon.move(Vector2(self.center), self.angle)
-            self.actual_movement -= math.fabs(direction)
+            self.x += direction
+            if self.cannon.rect is not None:
+                self.cannon.rect.move_ip(direction, 0)
+            else:
+                print("Warning: Cannon rect is None. Make sure start() is called.")
+            self.actual_movement -= 1
 
     def recieve_damage(self, damage):
         print(f"{self.__class__.__name__} recieves {damage} damage")
