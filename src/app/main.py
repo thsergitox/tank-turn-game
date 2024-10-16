@@ -19,14 +19,14 @@ def main():
     running = True
     while running:
         # Menu
-        players = menu_view(screen, clock, background)
-        if not players or (players[0] is None and players[1] is None):
+        player_names = menu_view(screen, clock, background)
+        if not player_names or (player_names[0] is None and player_names[1] is None):
             running = False
             continue
 
         # Stats
-        for player in players:
-            if player and not stats_view(screen, clock, background, player):
+        for player_name in player_names:
+            if player_name and not stats_view(screen, clock, background, player_name):
                 running = False
                 break
 
@@ -34,7 +34,7 @@ def main():
             continue
 
         # Game
-        game_result = game_view(screen, clock)
+        game_result = game_view(screen, clock, player_names)
         if not game_result:
             running = False
 
